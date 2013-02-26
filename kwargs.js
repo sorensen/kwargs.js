@@ -30,24 +30,32 @@ function kwargs(method, args) {
  * @returns {Array} converted arg array
  */
 
-kwargs.getValues = function(method, args) {
+kwargs.getValues = function(method, obj) {
   var names = kwargs.getNames(method)
-    , empty = new Array(names.length)
-    , start = 1
-    , idx
+    , list = [], start = 1, idx
+    , aidx = names.indexOf('_args')
+    , kidx = names.indexOf('__kwargs')
+    , __kwargs = !!~kidx && !obj.__kwargs ? {} : null
 
-  if (toString.call(args) === '[object Object]') {
-    for (var prop in args) {
-      idx = names.indexOf('' + prop)
-      !!~idx && (empty[idx] = args[prop])
-    }
-    for (var prop in args) {
-      idx = names.indexOf(prop)
-      !~idx && empty.push(args[prop])
-    }
+  // Check for sent kwargs object
+  if (toString.call(obj) === '[object Object]') {
     start = 2
+    for (var prop in obj) {
+      idx = names.indexOf(prop)
+      if (!!~idx) {
+        list[idx] = obj[prop]
+      } else if (__kwargs) {
+        __kwargs[prop] = obj[prop]
+      }
+    }
+    __kwargs && (list[kidx] = __kwargs)
   }
-  return empty.concat(slice.call(arguments, start))
+  if (!!~aidx && !obj._args) {
+    list[aidx] = slice.call(arguments, start)
+  } else {
+    list = list.concat(slice.call(arguments, start))
+  }
+  return list
 }
 
 /**

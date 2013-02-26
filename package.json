@@ -1,8 +1,8 @@
 {
   "author": "Beau Sorensen <mail@beausorensen.com> (http://github.com/sorensen)"
 , "name": "kwargs"
-, "description": "Python style kwargs for node.js"
-, "version": "0.0.1"
+, "description": "Python style args and kwargs for javascript"
+, "version": "0.0.2"
 , "license": "MIT"
 , "repository": {
     "type": "git"
